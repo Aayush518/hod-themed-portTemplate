@@ -275,16 +275,38 @@ const ProjectCard: React.FC<{
   );
 };
 
-export const Projects: React.FC = () => {
+export const Projects: React.FC<{ theme: 'blacks' | 'greens' }> = ({ theme }) => {
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
 
+  const themeColors = theme === 'blacks'
+    ? {
+        primary: 'text-red-500',
+        secondary: 'text-red-400',
+        border: 'border-red-900/30',
+        bg: 'bg-red-900/20',
+        hover: 'hover:bg-red-800/30',
+        gradient: 'from-red-900 via-red-600 to-red-900'
+      }
+    : {
+        primary: 'text-green-500',
+        secondary: 'text-green-400',
+        border: 'border-green-900/30',
+        bg: 'bg-green-900/20',
+        hover: 'hover:bg-green-800/30',
+        gradient: 'from-green-900 via-green-600 to-green-900'
+      };
+
+  const bgGradient = theme === 'blacks'
+    ? 'from-black to-gray-900'
+    : 'from-green-950 to-green-900';
+
   return (
-    <section id="projects" className="relative py-32 bg-gradient-to-b from-black to-gray-900 overflow-hidden">
+    <section id="projects" className={`relative py-32 bg-gradient-to-b ${bgGradient} overflow-hidden`}>
       {/* Background Effects */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&q=80')] bg-fixed opacity-5" />
         <motion.div
-          className="absolute inset-0 bg-gradient-radial from-red-900/20 to-transparent"
+          className={`absolute inset-0 bg-gradient-radial ${themeColors.gradient}`}
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -314,13 +336,13 @@ export const Projects: React.FC = () => {
               ease: "easeInOut",
             }}
           >
-            <Sword className="w-20 h-20 text-red-600 mx-auto mb-6" />
+            <Sword className={`w-20 h-20 ${themeColors.primary} mx-auto mb-6`} />
           </motion.div>
-          <h2 className="text-6xl font-targaryen text-red-600 mb-6">
+          <h2 className={`text-6xl font-targaryen ${themeColors.primary} mb-6`}>
             Conquered Realms
           </h2>
           <motion.div
-            className="w-32 h-1 bg-gradient-to-r from-red-900 via-red-600 to-red-900 mx-auto"
+            className={`w-32 h-1 bg-gradient-to-r ${themeColors.gradient} mx-auto`}
             animate={{
               scaleX: [1, 1.2, 1],
               opacity: [0.5, 1, 0.5],

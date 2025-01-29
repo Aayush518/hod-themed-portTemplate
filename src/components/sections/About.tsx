@@ -2,9 +2,13 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Shield, Sword, Crown, Scroll } from 'lucide-react';
 
-const FloatingSymbol = ({ children, index }: { children: React.ReactNode; index: number }) => (
+interface AboutProps {
+  theme: 'blacks' | 'greens';
+}
+
+const FloatingSymbol = ({ children, index, theme }: { children: React.ReactNode; index: number; theme: 'blacks' | 'greens' }) => (
   <motion.div
-    className="absolute text-red-600/20"
+    className={`absolute ${theme === 'blacks' ? 'text-red-600/20' : 'text-green-600/20'}`}
     style={{
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
@@ -26,7 +30,7 @@ const FloatingSymbol = ({ children, index }: { children: React.ReactNode; index:
   </motion.div>
 );
 
-export const About: React.FC = () => {
+export const About: React.FC<AboutProps> = ({ theme }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -37,18 +41,27 @@ export const About: React.FC = () => {
   const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8]);
 
   const symbols = [<Shield />, <Sword />, <Crown />, <Scroll />];
+  const themeColors = theme === 'blacks'
+    ? 'from-red-900 via-red-600 to-red-900'
+    : 'from-green-900 via-green-600 to-green-900';
+
+  const bgGradient = theme === 'blacks'
+    ? 'from-black to-gray-900'
+    : 'from-green-950 to-green-900';
 
   return (
     <section 
       ref={containerRef}
       id="about" 
-      className="relative py-32 bg-gradient-to-b from-black to-gray-900 overflow-hidden"
+      className={`relative py-32 bg-gradient-to-b ${bgGradient} overflow-hidden`}
     >
       {/* Background Effects */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&q=80')] bg-fixed opacity-5" />
         <motion.div
-          className="absolute inset-0 bg-gradient-radial from-red-900/20 to-transparent"
+          className={`absolute inset-0 bg-gradient-radial ${
+            theme === 'blacks' ? 'from-red-900/20' : 'from-green-900/20'
+          } to-transparent`}
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -61,7 +74,7 @@ export const About: React.FC = () => {
         
         {/* Floating Symbols */}
         {symbols.map((symbol, index) => (
-          <FloatingSymbol key={index} index={index}>
+          <FloatingSymbol key={index} index={index} theme={theme}>
             {symbol}
           </FloatingSymbol>
         ))}
@@ -78,12 +91,16 @@ export const About: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <Shield className="w-16 h-16 text-red-600 mx-auto mb-4 animate-pulse" />
-          <h2 className="text-6xl font-targaryen text-red-600 mb-4">
+          <Shield className={`w-16 h-16 ${
+            theme === 'blacks' ? 'text-red-600' : 'text-green-600'
+          } mx-auto mb-4 animate-pulse`} />
+          <h2 className={`text-6xl font-targaryen ${
+            theme === 'blacks' ? 'text-red-600' : 'text-green-600'
+          } mb-4`}>
             The Tale Begins
           </h2>
           <motion.div 
-            className="w-32 h-1 bg-gradient-to-r from-red-900 via-red-600 to-red-900 mx-auto"
+            className={`w-32 h-1 bg-gradient-to-r ${themeColors} mx-auto`}
             animate={{
               scaleX: [1, 1.2, 1],
               opacity: [0.5, 1, 0.5],
@@ -104,7 +121,11 @@ export const About: React.FC = () => {
             className="relative group"
           >
             <motion.div
-              className="absolute -inset-4 bg-red-600/20 rounded-lg blur-xl group-hover:bg-red-600/30"
+              className={`absolute -inset-4 ${
+                theme === 'blacks' ? 'bg-red-600/20' : 'bg-green-600/20'
+              } rounded-lg blur-xl group-hover:${
+                theme === 'blacks' ? 'bg-red-600/30' : 'bg-green-600/30'
+              }`}
               animate={{
                 scale: [1, 1.1, 1],
                 opacity: [0.5, 0.8, 0.5],
@@ -137,7 +158,9 @@ export const About: React.FC = () => {
             className="space-y-6"
           >
             <motion.p
-              className="text-xl leading-relaxed text-gray-300"
+              className={`text-xl leading-relaxed ${
+                theme === 'blacks' ? 'text-gray-300' : 'text-emerald-200'
+              }`}
               whileHover={{ x: 10 }}
             >
               Like the great houses of Westeros, every developer has their own story.
@@ -146,7 +169,9 @@ export const About: React.FC = () => {
             </motion.p>
             
             <motion.p
-              className="text-xl leading-relaxed text-gray-300"
+              className={`text-xl leading-relaxed ${
+                theme === 'blacks' ? 'text-gray-300' : 'text-emerald-200'
+              }`}
               whileHover={{ x: 10 }}
             >
               With over [X] years of experience in web development, I've forged
@@ -161,7 +186,7 @@ export const About: React.FC = () => {
                   whileHover={{ scale: 1.05 }}
                 >
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-red-900 to-red-600 opacity-50"
+                    className={`absolute inset-0 bg-gradient-to-r ${themeColors} opacity-50`}
                     animate={{
                       x: ['-100%', '100%'],
                     }}
@@ -172,7 +197,9 @@ export const About: React.FC = () => {
                       delay: index * 0.2,
                     }}
                   />
-                  <span className="relative text-red-500 font-bold">{tech}</span>
+                  <span className={`relative ${
+                    theme === 'blacks' ? 'text-red-500' : 'text-green-500'
+                  } font-bold`}>{tech}</span>
                 </motion.span>
               ))}
             </div>

@@ -188,13 +188,35 @@ const SkillCard: React.FC<Skill> = ({ name, level, icon, house, description, col
   );
 };
 
-export const Skills: React.FC = () => {
+export const Skills: React.FC<{ theme: 'blacks' | 'greens' }> = ({ theme }) => {
+  const themeColors = theme === 'blacks'
+    ? {
+        primary: 'text-red-500',
+        secondary: 'text-red-400',
+        border: 'border-red-900/30',
+        bg: 'bg-red-900/20',
+        hover: 'hover:bg-red-800/30',
+        gradient: 'from-red-900 via-red-600 to-red-900'
+      }
+    : {
+        primary: 'text-green-500',
+        secondary: 'text-green-400',
+        border: 'border-green-900/30',
+        bg: 'bg-green-900/20',
+        hover: 'hover:bg-green-800/30',
+        gradient: 'from-green-900 via-green-600 to-green-900'
+      };
+
+  const bgGradient = theme === 'blacks'
+    ? 'from-black to-gray-900'
+    : 'from-green-950 to-green-900';
+
   return (
-    <section className="relative py-32 bg-gradient-to-b from-black to-gray-900 overflow-hidden">
+    <section id="skills" className={`relative py-32 bg-gradient-to-b ${bgGradient} overflow-hidden`}>
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&q=80')] bg-fixed opacity-5" />
         <motion.div
-          className="absolute inset-0 bg-gradient-radial from-red-900/20 to-transparent"
+          className={`absolute inset-0 bg-gradient-radial ${themeColors.bg}`}
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -223,12 +245,12 @@ export const Skills: React.FC = () => {
               ease: "easeInOut",
             }}
           >
-            <Dragon className="w-20 h-20 text-red-600 mx-auto mb-6" />
+            <Dragon className={`w-20 h-20 ${themeColors.primary} mx-auto mb-6`} />
           </motion.div>
-          <h2 className="text-6xl font-targaryen text-red-600 mb-6">
+          <h2 className={`text-6xl font-targaryen ${themeColors.primary} mb-6`}>
             Arsenal of Powers
           </h2>
-          <div className="w-32 h-1 bg-gradient-to-r from-red-900 via-red-600 to-orange-600 mx-auto" />
+          <div className={`w-32 h-1 bg-gradient-to-r ${themeColors.gradient} mx-auto`} />
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">

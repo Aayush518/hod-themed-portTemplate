@@ -1,12 +1,22 @@
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Sphere, Trail, useTexture } from '@react-three/drei';
+import { Sphere, Trail } from '@react-three/drei';
 import * as THREE from 'three';
 
-export const DragonModel: React.FC = () => {
+interface DragonModelProps {
+  theme: 'blacks' | 'greens';
+}
+
+export const DragonModel: React.FC<DragonModelProps> = ({ theme }) => {
   const dragonRef = useRef<THREE.Group>(null);
   const particlesRef = useRef<THREE.Points>(null);
   const fireRef = useRef<THREE.Points>(null);
+
+  const themeColors = {
+    primary: theme === 'blacks' ? '#FF0000' : '#00FF00',
+    secondary: theme === 'blacks' ? '#8B0000' : '#006400',
+    glow: theme === 'blacks' ? '#FF4500' : '#32CD32',
+  };
 
   // Create dragon body geometry
   const bodyGeometry = useMemo(() => {
@@ -42,7 +52,6 @@ export const DragonModel: React.FC = () => {
       dragonRef.current.rotation.y = Math.sin(time * 0.3) * 0.3;
       dragonRef.current.position.y = Math.sin(time * 0.5) * 0.2;
       
-      // Animate wings
       dragonRef.current.children.forEach((child, index) => {
         if (child.name === 'wing') {
           child.rotation.z = Math.sin(time * 2 + index) * 0.2;
@@ -71,23 +80,21 @@ export const DragonModel: React.FC = () => {
     }
   });
 
-  const dragonMaterial = useMemo(() => {
-    return new THREE.MeshStandardMaterial({
-      color: '#8B0000',
-      emissive: '#4B0000',
-      roughness: 0.5,
-      metalness: 0.8,
-      normalScale: new THREE.Vector2(2, 2),
-    });
-  }, []);
+  const dragonMaterial = new THREE.MeshStandardMaterial({
+    color: themeColors.primary,
+    emissive: themeColors.secondary,
+    roughness: 0.5,
+    metalness: 0.8,
+    normalScale: new THREE.Vector2(2, 2),
+  });
 
   return (
     <group ref={dragonRef}>
       {/* Dragon Body */}
       <mesh geometry={bodyGeometry} material={dragonMaterial}>
         <meshStandardMaterial
-          color="#8B0000"
-          emissive="#4B0000"
+          color={themeColors.primary}
+          emissive={themeColors.secondary}
           roughness={0.5}
           metalness={0.8}
           normalScale={new THREE.Vector2(2, 2)}
@@ -105,13 +112,13 @@ export const DragonModel: React.FC = () => {
           <Trail
             width={2}
             length={8}
-            color={new THREE.Color(0x8B0000)}
+            color={new THREE.Color(themeColors.primary)}
             attenuation={(t) => t * t}
           >
             <Sphere args={[0.1, 32, 32]}>
               <meshStandardMaterial
-                color="#FF0000"
-                emissive="#8B0000"
+                color={themeColors.glow}
+                emissive={themeColors.secondary}
                 emissiveIntensity={2}
                 roughness={0.2}
                 metalness={0.8}
@@ -126,8 +133,8 @@ export const DragonModel: React.FC = () => {
         <mesh key={x} position={[x, 0.2, 0.8]}>
           <sphereGeometry args={[0.1, 32, 32]} />
           <meshStandardMaterial
-            color="#FF0000"
-            emissive="#FF0000"
+            color={themeColors.glow}
+            emissive={themeColors.glow}
             emissiveIntensity={2}
             roughness={0}
             metalness={1}
@@ -147,7 +154,7 @@ export const DragonModel: React.FC = () => {
         </bufferGeometry>
         <pointsMaterial
           size={0.05}
-          color="#FF4500"
+          color={themeColors.glow}
           transparent
           opacity={0.8}
           blending={THREE.AdditiveBlending}
@@ -167,7 +174,7 @@ export const DragonModel: React.FC = () => {
         </bufferGeometry>
         <pointsMaterial
           size={0.02}
-          color="#FF4500"
+          color={themeColors.glow}
           transparent
           opacity={0.6}
           blending={THREE.AdditiveBlending}
